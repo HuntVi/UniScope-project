@@ -9,6 +9,7 @@ from backend.db_connection import init_app as init_db
 
 from backend.courses.course_routes import courses
 from backend.students.student_routes import students
+from backend.analytics.analytics_routes import analytics
 #from backend._x_students.student_routes import students
 #from backend._x_professors.professor_routes import professors
 #from backend._x_advisors.advisor_routes import advisors
@@ -41,6 +42,7 @@ def create_app():
 
     app.register_blueprint(courses)
     app.register_blueprint(students)
+    app.register_blueprint(analytics)
     #app.register_blueprint(students, url_prefix='/students')
     #app.register_blueprint(professors, url_prefix='/professors')
     #app.register_blueprint(advisors, url_prefix='/advisors')
