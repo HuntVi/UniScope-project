@@ -243,7 +243,3 @@ def get_course_review_summary(course_id):
         return build_response({'error': f'Course {course_id} not found'}, 404)
 
     return build_response(json_data)
-
-@courses.route('/test123', methods=['GET'])
-def test123():
-    return {'message': 'new route is loaded'}, 200
