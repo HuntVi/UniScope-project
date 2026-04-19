@@ -62,7 +62,7 @@ if len(courses) > 0:
                 if not comment:
                     st.warning("Please enter a comment.")
                 else:
-                    # Packageing comment 
+                    # Packaging comment 
                     payload = {
                         "student_id": 1, #Test purposes
                         "offering_id": 1, #Test purposes
@@ -90,36 +90,44 @@ if len(courses) > 0:
     # 1.1 Edit or delete past reviews
     st.divider()
     st.subheader("Your Past Reviews")
-    
-    try:
-        # Pull all reviews
-        all_reviews = requests.get(f"{API_BASE_URL}/reviews").json()
-        st.write(f"Debug: Total reviews found: {len(all_reviews)}")
+    # See if comments are inputted succesfully
+    #st.write(f"Debug: Total reviews found: {len(all_reviews)}")
+
+    # Pull all reviews
+    all_reviews = requests.get(f"{API_BASE_URL}/reviews").json()
         
-        if all_reviews:
-            for r in all_reviews:
-                with st.container(border=True):
-                    # Check if the same comment
-                    st.write(f"**Course ID: {r['course_id']}** | {r['semester']} {r['year']}")
-                    st.write(f"Comment: {r['comment_text']}")
+    if all_reviews:
+        for r in all_reviews:
+            with st.container(border=True):
+                # Check if the same comment
+                st.write(f"### {r['course_code']} - {r['course_name']}")
+                st.caption(f"📅 {r['semester']} {r['year']} | Submitted on: {r['review_date']}")
+
+                st.divider()
+
+                # Show score in "Your Past Reviews"
+                s1, s2, s3 = st.columns(3)
+                s1.metric("Difficulty", f"{r['difficulty_score']}/5")
+                s2.metric("Workload", f"{r['workload_score']}/5")
+                s3.metric("Clarity", f"{r['clarity_score']}/5")
+            
+                st.write(f"Comment: {r['comment_text']}")
                     
-                    edit_col, del_col, _ = st.columns([1, 1, 4])
+                edit_col, del_col, _ = st.columns([1, 1, 4])
                     
-                    # Delete
-                    if del_col.button("Delete", key=f"del_{r['review_id']}"):
-                        del_res = requests.delete(f"{API_BASE_URL}/reviews/{r['review_id']}")
-                        if del_res.status_code == 200:
-                            st.toast("Review deleted!")
-                            st.rerun()
+                # Delete
+                if del_col.button("Delete", key=f"del_{r['review_id']}"):
+                    del_res = requests.delete(f"{API_BASE_URL}/reviews/{r['review_id']}")
+                    if del_res.status_code == 200:
+                        st.toast("Review deleted!")
+                        st.rerun()
                     
-                    # Edit
-                    if edit_col.button("Edit", key=f"edit_{r['review_id']}"):
-                        st.session_state['editing_review'] = r
-                        st.info("Edit mode: This would load the form above with these values.")
-        else:
-            st.info("You haven't submitted any reviews yet.")
-    except Exception as e:
-        st.write("Could not load your previous reviews at this time. Please try again later.")
+                # Edit
+                if edit_col.button("Edit", key=f"edit_{r['review_id']}"):
+                    st.session_state['editing_review'] = r
+                    st.info("Edit mode: This would load the form above with these values.")
+    else:
+        st.info("You haven't submitted any reviews yet.")
 
 else:
     st.error("No courses found.")
