@@ -8,6 +8,10 @@ from backend.db_connection import init_app as init_db
 #from backend.ngos.ngo_routes import ngos
 
 from backend.courses.course_routes import courses
+from backend.departments.department_routes import departments
+from backend.reviews.review_routes import reviews
+from backend.flags.flag_routes import flags
+from backend.systemlogs.systemlog_routes import systemlogs
 from backend.students.student_routes import students
 from backend.analytics.analytics_routes import analytics
 from backend.semester_plans.semester_plan_routes import semester_plans
@@ -42,6 +46,7 @@ def create_app():
     #app.register_blueprint(ngos, url_prefix="/ngo")
 
     app.register_blueprint(courses)
+
     app.register_blueprint(students)
     app.register_blueprint(analytics)
     app.register_blueprint(semester_plans)
@@ -49,5 +54,11 @@ def create_app():
     #app.register_blueprint(professors, url_prefix='/professors')
     #app.register_blueprint(advisors, url_prefix='/advisors')
     #app.register_blueprint(admin, url_prefix='/admin')
+
+    app.register_blueprint(departments)
+    app.register_blueprint(reviews)
+    app.register_blueprint(flags)
+    app.register_blueprint(systemlogs)
+
 
     return app
