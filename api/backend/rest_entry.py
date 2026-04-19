@@ -6,11 +6,13 @@ import logging
 from backend.db_connection import init_app as init_db
 #from backend.simple.simple_routes import simple_routes
 #from backend.ngos.ngo_routes import ngos
+
 from backend.courses.course_routes import courses
 from backend.students.student_routes import students
-from backend.professors.professor_routes import professors
-from backend.advisors.advisor_routes import advisors
-from backend.admin.admin_routes import admin
+#from backend._x_students.student_routes import students
+#from backend._x_professors.professor_routes import professors
+#from backend._x_advisors.advisor_routes import advisors
+#from backend._x_admin.admin_routes import admin
 
 
 def create_app():
@@ -36,10 +38,12 @@ def create_app():
     app.logger.info("create_app(): registering blueprints")
     #app.register_blueprint(simple_routes)
     #app.register_blueprint(ngos, url_prefix="/ngo")
+
     app.register_blueprint(courses)
-    app.register_blueprint(students, url_prefix='/students')
-    app.register_blueprint(professors, url_prefix='/professors')
-    app.register_blueprint(advisors, url_prefix='/advisors')
-    app.register_blueprint(admin, url_prefix='/admin')
+    app.register_blueprint(students)
+    #app.register_blueprint(students, url_prefix='/students')
+    #app.register_blueprint(professors, url_prefix='/professors')
+    #app.register_blueprint(advisors, url_prefix='/advisors')
+    #app.register_blueprint(admin, url_prefix='/admin')
 
     return app
