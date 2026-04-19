@@ -125,6 +125,49 @@ def get_course(course_id):
 
 
 # ------------------------------------------------------------
+# GET /courses/<course_id>/offerings
+# Returns all semester offerings for a course, each with the
+# professors who taught it. Used to populate the offering
+# dropdown on the Submit Review page so students never have
+# to type an offering_id manually.
+# Response shape per item:
+#   { offering_id, semester, year, professors }
+# where `professors` is a comma-separated string of names,
+# or an empty string if no professor is assigned.
+# ------------------------------------------------------------
+@courses.route('/courses/<int:course_id>/offerings', methods=['GET'])
+def get_course_offerings(course_id):
+    current_app.logger.info(f'course_routes.py: GET /courses/{course_id}/offerings')
+
+    cursor = get_db().cursor()
+
+    query = '''
+        SELECT
+            co.offering_id,
+            co.semester,
+            co.year,
+            COALESCE(
+                GROUP_CONCAT(p.professor_name ORDER BY p.professor_name SEPARATOR ', '),
+                ''
+            ) AS professors
+        FROM CourseOffering co
+        LEFT JOIN ProfessorOffering po ON co.offering_id  = po.offering_id
+        LEFT JOIN Professor         p  ON po.professor_id = p.professor_id
+        WHERE co.course_id = %s
+        GROUP BY co.offering_id, co.semester, co.year
+        ORDER BY co.year DESC, co.semester
+    '''
+
+    cursor.execute(query, (course_id,))
+    json_data = format_query_results(cursor)
+
+    if not json_data:
+        return build_response({'error': f'No offerings found for course {course_id}'}, 404)
+
+    return build_response(json_data)
+
+
+# ------------------------------------------------------------
 # GET /courses/<course_id>/reviews
 # Returns all non-rejected reviews for a specific course.
 # Includes semester and year from CourseOffering.
