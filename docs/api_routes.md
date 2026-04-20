@@ -544,10 +544,10 @@ Returns all offerings for a course, including semester, year, and professors who
 
 ## Students
 
-### `GET /students/{studentID}`
+### `GET /students/{student_id}`
 Returns a student profile including academic year, department, and total completed hours.
 
-**URL param:** `studentID` — integer
+**URL param:** `student_id` — integer
 
 **Query params:** none
 
@@ -632,10 +632,10 @@ Creates a new semester plan.
 
 ---
 
-### `GET /semesterplans/{planID}`
-Returns one semester plan with summary metrics and the list of courses currently in that plan. Summary values are computed from the linked course metrics.
+### `GET /semesterplans/{plan_id}`
+Returns a semester plan with computed summary metrics and its associated courses. Summary values are computed from the linked course metrics.
 
-**URL param:** `planID` — integer
+**URL param:** `plan_id` — integer
 
 **Query params:** none
 
@@ -679,10 +679,42 @@ Returns one semester plan with summary metrics and the list of courses currently
 
 ---
 
-### `DELETE /semesterplans/{planID}`
+### `GET /students/{student_id}/semesterplans`
+Returns all semester plans that belong to a given student.
+- Does not include course-level details (use GET /semesterplans/{id} for full plan view)
+
+**URL param:** `student_id` — integer
+
+**Usage:**
+- `GET /students/1/semesterplans` — list all plans created by student 1
+- Used for dashboards or plan selection pages
+
+**Returns:** `200`
+```json
+[
+  {
+    "plan_id": 56,
+    "student_id": 1,
+    "advisor_id": 2,
+    "plan_name": "Fall Plan"
+  },
+  {
+    "plan_id": 61,
+    "student_id": 1,
+    "advisor_id": null,
+    "plan_name": "Backup Spring Plan"
+  }
+]
+```
+
+**Returns:** `200` with an empty list if the student has no semester plans yet
+
+---
+
+### `DELETE /semesterplans/{plan_id}`
 Deletes one semester plan. Related `PlanCourse` rows are also removed automatically by cascade.
 
-**URL param:** `planID` — integer
+**URL param:** `plan_id` — integer
 
 **Query params:** none
 
@@ -702,11 +734,11 @@ Deletes one semester plan. Related `PlanCourse` rows are also removed automatica
 
 ---
 
-### `POST /semesterplans/{planID}/courses/{course_id}`
+### `POST /semesterplans/{plan_id}/courses/{course_id}`
 Adds a course to an existing semester plan.
 
 **URL params:**
-- `planID` — integer
+- `plan_id` — integer
 - `course_id` — integer
 
 **Query params:** none
@@ -730,11 +762,11 @@ Adds a course to an existing semester plan.
 
 ---
 
-### `DELETE /semesterplans/{planID}/courses/{course_id}`
+### `DELETE /semesterplans/{plan_id}/courses/{course_id}`
 Removes a course from an existing semester plan.
 
 **URL params:**
-- `planID` — integer
+- `plan_id` — integer
 - `course_id` — integer
 
 **Query params:** none
@@ -759,15 +791,18 @@ Removes a course from an existing semester plan.
 
 ## Semester Plan Logic Notes (Reference)
 
-```text
-POST /semesterplans                         → creates a new empty plan
-GET  /semesterplans/{id}                    → returns plan + computed summary metrics
-POST /semesterplans/{id}/courses/{course}   → adds one course to the plan
-DELETE /semesterplans/{id}/courses/{course} → removes one course from the plan
-DELETE /semesterplans/{id}                  → deletes the whole plan
+```
+POST   /semesterplans                          → create empty plan
+GET    /semesterplans/{id}                     → get full plan details
+GET    /students/{student_id}/semesterplans    → get all plans for a student
+POST   /semesterplans/{id}/courses/{course}    → add course
+DELETE /semesterplans/{id}/courses/{course}    → remove course
+DELETE /semesterplans/{id}                     → delete plan
 ```
 
-Additional notes:
-- `is_manageable` is based on whether `total_avg_weekly_hours <= 20`
-- `warning` is populated when the workload threshold is exceeded
-- Plan summary metrics are computed in Python after fetching the courses
+**Additional Notes:**
+- `GET /students/{student_id}/semesterplans` returns only plan metadata
+- `GET /semesterplans/{id}` returns full details + computed metrics
+- `is_manageable` is based on `total_avg_weekly_hours <= 20`
+- `warning` is set if workload is too high
+- metrics are computed in Python after fetching course data
