@@ -4,7 +4,7 @@ from modules.nav import SideBarLinks
 
 SideBarLinks()
 
-API_BASE_URL = "http://web-api:4000"
+API_BASE_URL = "http://api:4000"
 
 st.title('System Logs')
 st.write("Monitor platform performance and system activity.")

@@ -4,7 +4,7 @@ from modules.nav import SideBarLinks
 
 SideBarLinks()
 
-API_BASE_URL = "http://web-api:4000"
+API_BASE_URL = "http://api:4000"
 
 st.title('Flag Management')
 st.write("View and resolve flagged course reviews.")
