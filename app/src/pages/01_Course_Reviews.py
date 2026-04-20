@@ -37,7 +37,7 @@ def get_reviews(course_id):
 
 courses = get_courses()
 
-# Check if we actually get the courses instead of any empty list
+# Check if app actually get the courses instead of any empty list
 if len(courses) > 0:
     course_options = {f"{c['course_code']} - {c['course_name']}": c for c in courses}
 
