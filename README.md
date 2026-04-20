@@ -131,28 +131,7 @@ http://localhost:8501
 
 ## 🔌 API Overview
 
-The backend is built using a Flask REST API with multiple blueprints.
-
-### Main API Groups
-
-- `/courses` — course catalog and analytics  
-- `/reviews` — create/update/delete reviews  
-- `/flags` — moderation system  
-- `/systemlogs` — system logs  
-- `/students` — student profiles  
-- `/analytics` — workload insights  
-- `/semesterplans` — course planning  
-
-### Example Endpoints
-
-- GET /courses  
-- GET /courses/{id}/trends  
-- POST /reviews  
-- PUT /reviews/{id}  
-- DELETE /reviews/{id}  
-- POST /semesterplans  
-
-All endpoints return JSON and follow REST principles.
+For a full list of endpoints, request/response details, and blueprint organization, see [docs/api_routes.md](docs/api_routes.md).
 
 ---
 
@@ -172,10 +151,43 @@ All endpoints return JSON and follow REST principles.
 
 ```
 UniScope-project/
-├── api/
-├── app/src/
-├── database-files/
-└── scripts/
+├── api/                          # Flask REST API
+│   ├── Dockerfile
+│   ├── backend_app.py            # App entry point
+│   └── backend/
+│       ├── rest_entry.py         # Blueprint registration & app factory
+│       ├── db_connection/        # MySQL connection helpers
+│       ├── courses/              # Course catalog & review metrics routes
+│       ├── departments/          # Department listing & course lookup routes
+│       ├── reviews/              # Review CRUD routes
+│       ├── flags/                # Review flagging & moderation routes
+│       ├── systemlogs/           # System log routes
+│       ├── students/             # Student profile routes
+│       ├── analytics/            # Workload analytics routes
+│       └── semester_plans/       # Semester plan CRUD routes
+│
+├── app/                          # Streamlit frontend
+│   ├── Dockerfile
+│   └── src/
+│       ├── Home.py               # App entry page
+│       ├── modules/              # Shared navigation helpers
+│       └── pages/                # One file per UI page, prefixed by persona
+│           ├── 00–03_*           # Student pages (browse, review, plan)
+│           ├── 10–13_*           # Professor pages (ratings, trends, feedback)
+│           ├── 20–23_*           # Advisor pages (comparison, plan evaluator)
+│           └── 30–33_*           # Admin pages (moderation, flags, logs)
+│
+├── database-files/               # SQL schema and seed data
+│   ├── uniscope.sql              # DDL: table definitions
+│   └── uniscope_data.sql         # DML: sample data inserts
+│
+├── docs/                         # Project documentation
+│   └── api_routes.md             # Full API endpoint reference
+│
+├── scripts/                      # Utility scripts
+│   └── generate_data.py          # Synthetic data generator
+│
+└── docker-compose.yaml           # Orchestrates db, api, and app containers
 ```
 
 ---
@@ -188,4 +200,4 @@ A 6–8 minute demo video showcasing:
 - Frontend features  
 - Database interactions  
 
-Link: (to be added before submission)
+Link: https://drive.google.com/file/d/1M3sbTffJnlvmBeU1UhQgbJ7RPIRyibWf/view?usp=sharing
