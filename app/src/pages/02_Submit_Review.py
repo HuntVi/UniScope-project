@@ -91,7 +91,7 @@ if len(courses) > 0:
     st.divider()
     st.subheader("Your Past Reviews")
     # See if comments are inputted succesfully
-    #st.write(f"Debug: Total reviews found: {len(all_reviews)}")
+    #st.write(f"Total reviews found: {len(all_reviews)}")
 
     # Pull all reviews
     all_reviews = requests.get(f"{API_BASE_URL}/reviews").json()
@@ -101,7 +101,7 @@ if len(courses) > 0:
             with st.container(border=True):
                 # Check if the same comment
                 st.write(f"### {r['course_code']} - {r['course_name']}")
-                st.caption(f"📅 {r['semester']} {r['year']} | Submitted on: {r['review_date']}")
+                st.caption(f"{r['semester']} {r['year']} | Submitted on: {r['review_date']}")
 
                 st.divider()
 
@@ -110,7 +110,6 @@ if len(courses) > 0:
                 s1.metric("Difficulty", f"{r['difficulty_score']}/5")
                 s2.metric("Workload", f"{r['workload_score']}/5")
                 s3.metric("Clarity", f"{r['clarity_score']}/5")
-            
                 st.write(f"Comment: {r['comment_text']}")
                     
                 edit_col, del_col, _ = st.columns([1, 1, 4])
