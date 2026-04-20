@@ -160,6 +160,52 @@ def get_semester_plan(plan_id):
 
 
 # ------------------------------------------------------------
+# /students/<student_id>/semesterplans returns all semester plans
+# for a given student
+#
+# This allows the frontend to:
+# - fetch all plans created by a student
+# - select a specific plan to view in detail
+@semester_plans.route("/students/<int:student_id>/semesterplans", methods=["GET"])
+def get_student_semester_plans(student_id):
+    current_app.logger.info(f"GET /students/{student_id}/semesterplans")
+
+    try:
+        cursor = get_db().cursor()
+
+        # ------------------------------------------------------------
+        # Query:
+        # Retrieve all semester plans belonging to this student
+        # Ordered by most recently created (highest plan_id first)
+        query = '''
+            SELECT
+                plan_id,
+                student_id,
+                advisor_id,
+                plan_name
+            FROM SemesterPlan
+            WHERE student_id = %s
+            ORDER BY plan_id DESC
+        '''
+        cursor.execute(query, (student_id,))
+
+        headers = [x[0] for x in cursor.description]
+        plans = []
+
+        the_data = cursor.fetchall()
+        for row in the_data:
+            plans.append(dict(zip(headers, row)))
+
+        # ------------------------------------------------------------
+        # Return list of semester plans (can be empty if none exist)
+        return jsonify(plans), 200
+
+    except Exception as e:
+        current_app.logger.error(f"Error fetching semester plans for student {student_id}: {e}")
+        return jsonify({"error": "Failed to retrieve semester plans"}), 500
+
+
+# ------------------------------------------------------------
 # /semesterplans creates a new semester plan
 # The client sends plan information in JSON format
 @semester_plans.route("/semesterplans", methods=["POST"])
