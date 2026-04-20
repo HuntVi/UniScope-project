@@ -4,7 +4,7 @@ from modules.nav import SideBarLinks
 
 SideBarLinks()
 
-API_BASE_URL = "https://api:4000"
+API_BASE_URL = "https://localhost:4000"
 
 st.title(f'Welcome, {st.session_state.get("first_name", "Admin")}!')
 st.write('What would you like to do today?')

@@ -4,7 +4,7 @@ from modules.nav import SideBarLinks
 
 SideBarLinks()
 
-API_BASE_URL = "http://api:4000"
+API_BASE_URL = "http://localhost:4000"
 st.title('Review Moderation')
 st.write("Approve or reject student course reviews.")
 
