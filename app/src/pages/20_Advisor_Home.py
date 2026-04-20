@@ -3,9 +3,6 @@ from modules.nav import SideBarLinks
 
 SideBarLinks()
 
-# ========================================================
-# Advisor Home Page — Muhammad (Academic Advisor)
-# ========================================================
 st.title(f'Welcome, {st.session_state.get("first_name", "Muhammad")}! 👋')
 st.write('### Your Advisor Dashboard')
 st.write(
