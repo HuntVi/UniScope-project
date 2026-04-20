@@ -52,6 +52,18 @@ if len(departments) > 0:
         st.success(f"Found {len(courses)} courses in {selected_dept}")
 
         df = pd.DataFrame(courses)
+
+        # --- Fix: convert numeric columns from string to float ---
+        numeric_cols = [
+            "avg_difficulty", "avg_workload",
+            "avg_clarity", "avg_satisfaction",
+            "review_count", "credits"
+        ]
+        for col in numeric_cols:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
+
+        # Only keep courses that actually have reviews
         reviewed_df = df[df["review_count"].fillna(0) > 0]
 
         # Department-level summary metrics
